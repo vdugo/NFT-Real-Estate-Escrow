@@ -17,7 +17,7 @@ describe('RealEstate', () =>
         const Escrow = await ethers.getContractFactory('Escrow')
 
         realEstate = await RealEstate.deploy()
-        escrow = await Escrow.deploy()
+        escrow = await Escrow.deploy(realEstate.address, NFT_ID)
     })
 
     describe('Deployment', async () =>
