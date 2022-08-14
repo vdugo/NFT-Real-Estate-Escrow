@@ -14,6 +14,20 @@ contract Escrow
     address public inspector;
     address public lender;
 
+    modifier onlyBuyer()
+    {
+        require(msg.sender == buyer, "must be buyer");
+        _;
+    }
+
+    modifier onlyInspector()
+    {
+        require(msg.sender == inspector, "must be inspector");
+        _;
+    }
+
+    bool public inspectionPassed = false;
+
     constructor(
         address _nftAddress, 
         uint256 _nftId, 
@@ -35,10 +49,14 @@ contract Escrow
         lender = _lender;
     }
 
-    function depositEarnest() public payable
+    function depositEarnest() public payable onlyBuyer
     {
         require(msg.value >= escrowAmount, "earnest not enough");
-        require(msg.sender == buyer, "must be buyer");
+    }
+
+    function updateInspectionStatus(bool _passed) public onlyInspector
+    {
+        inspectionPassed = _passed;
     }
 
     function getBalance() public view returns(uint256)
