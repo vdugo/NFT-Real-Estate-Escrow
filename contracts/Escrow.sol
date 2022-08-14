@@ -7,11 +7,15 @@ contract Escrow
 {
     address public nftAddress;
     uint256 public nftId;
+    address payable public seller;
+    address payable public buyer;
 
-    constructor(address _nftAddress, uint256 _nftId)
+    constructor(address _nftAddress, uint256 _nftId, address payable _seller, address payable _buyer)
     {
         nftAddress = _nftAddress;
         nftId = _nftId;
+        seller = _seller;
+        buyer = _buyer;
     }
 
     /**
@@ -19,6 +23,6 @@ contract Escrow
      */
     function finalizeSale() public
     {
-        IERC721(nftAddress).transferFrom("seller", "buyer", nftId);
+        IERC721(nftAddress).transferFrom(seller, buyer, nftId);
     }
 }
