@@ -1,0 +1,1 @@
+Taking the demo RealEstate.sol contract from OpenZeppelin then integrating it with an Escrow.sol contract.
