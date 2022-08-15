@@ -30,6 +30,11 @@ contract Escrow
     // address -> boolean that lets us know if this entity has approved the transaction yet
     mapping(address => bool) public approval;
 
+    receive() external payable
+    {
+
+    }
+
     constructor(
         address _nftAddress, 
         uint256 _nftId, 
@@ -81,6 +86,12 @@ contract Escrow
         require(approval[buyer], "must be approved by buyer");
         require(approval[seller], "must be approved by seller");
         require(approval[lender], "must be approved by lender");
+
+        require(address(this).balance >= purchasePrice, "must have enough ether for sale");
+
+        (bool success, ) = payable(seller).call{value: address(this).balance}("");
+        require(success, "transfer to buyer not successful");
+
         IERC721(nftAddress).transferFrom(seller, buyer, nftId);
     }
 }

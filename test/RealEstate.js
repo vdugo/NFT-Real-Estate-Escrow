@@ -87,6 +87,9 @@ describe('RealEstate', () =>
             transaction = await escrow.connect(seller).approveSale()
             await transaction.wait()
 
+            // lender funds the sale
+            transaction = await lender.sendTransaction({ to: escrow.address, value: ether(80) })
+
             // lender approves sale
             transaction = await escrow.connect(lender).approveSale()
             await transaction.wait()
