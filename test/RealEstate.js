@@ -62,14 +62,36 @@ describe('RealEstate', () =>
             // expects the seller to be the NFT owner before the sale
             expect(await realEstate.ownerOf(NFT_ID)).to.equal(seller.address)
 
+            // check balance before the buyer deposits earnest
+            balance = await escrow.getBalance()
+            console.log(`Escrow balance before buyer deposits earnest: ${ethers.utils.formatEther(balance)}`)
+
             // buyer deposits earnest
             transaction = await escrow.connect(buyer).depositEarnest({value: ether(20)})
+            await transaction.wait()
 
             // check escrow balance
             balance = await escrow.getBalance()
-            console.log(`Escrow balance: ${ethers.utils.formatEther(balance)}`)
+            console.log(`Escrow balance after buyer deposits earnest: ${ethers.utils.formatEther(balance)}`)
 
-            // finalize the sale
+            // inspector updates status
+            transaction = await escrow.connect(inspector).updateInspectionStatus(true)
+            await transaction.wait()
+            console.log('Inspector updates status')
+
+            // buyer approves sale
+            transaction = await escrow.connect(buyer).approveSale()
+            await transaction.wait()
+
+            // seller approves sale
+            transaction = await escrow.connect(seller).approveSale()
+            await transaction.wait()
+
+            // lender approves sale
+            transaction = await escrow.connect(lender).approveSale()
+            await transaction.wait()
+
+            // finalize sale
             transaction = await escrow.connect(buyer).finalizeSale()
             await transaction.wait()
 
